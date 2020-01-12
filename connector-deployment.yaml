@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iot-connector-deployment
+  labels:
+    app: iot-connector
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iot-connector
+  template:
+    metadata:
+      labels:
+        app: iot-connector
+    spec:
+      hostAliases:
+      - ip: "172.16.4.21"
+        hostnames:
+        - "test.stategrid.nx"
+      containers:
+      - name: iot-connector
+        image: 172.16.4.1:15000/vantiq/iot-connector:0.1
+        imagePullPolicy: IfNotPresent
+        #command: [ "/bin/sh", "-c", "cat /etc/config/config.json" ]
+        #args:
+          #- "/etc/config/config.json"        
+        volumeMounts:
+        - name: config
+          mountPath: /etc/config
+      volumes:
+      - name: config
+        configMap:
+          name: iot-connector
+          items:
+            - key: "config.json"
+              path: "config.json"
+        

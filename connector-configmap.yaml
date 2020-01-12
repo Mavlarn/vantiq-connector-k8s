@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iot-connector
+  labels:
+    app: iot-connector
+    env: prod
+  namespace: vantiq_ns
+data:
+  config.json: |-
+    {
+      "vantiqUrl": "https://test.thedomain.nx:31554",
+      "token": "<the_token>",
+      "sourceName": "the_connector_source"
+    }
