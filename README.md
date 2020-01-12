@@ -1,9 +1,9 @@
 # vantiq-connector-k8s
-deploy vantiq connector in k8s.
+Deploy vantiq connector in k8s.
 
 
 ## Usage
-1. build docker image with Dockerfile .
+1. build docker image with Dockerfile.
 2. upload docker image to harbor or load in k8s worker nodes.
 3. apply ConfigMap
 4. apply Deployment
@@ -13,10 +13,11 @@ Copy the packaged jar in current directory, and build:
 ```
 docker build -t vantiq/<connector-name>:1.0 .
 ```
+From the *Dockerfile*, you can see we should package the connector as a uberjar file. If it is not, you should modify the *Dockerfile* to copy your directory and modify the *CMD*.
 
 
 ## upload docker image
-If need to upload docker image to harbor, need to add a tag and push:
+To upload docker image to harbor, need to add a tag and push:
 ```
 docker tag vantiq/<connector-name>:1.0 172.10.10.1:15000/vantiq/<connector-name>:1.0
 
@@ -24,6 +25,15 @@ docker tag vantiq/<connector-name>:1.0 172.10.10.1:15000/vantiq/<connector-name>
 docker login 172.10.10.1:15000
 
 docker push 172.10.10.1:15000/vantiq/<connector-name>:1.0
+```
+
+Or just save your docker image as a *tar* file and load it in k8s nodes:
+```
+# export docker image to file
+docker save vantiq/<connector-name>:1.0 -o connector-1.0.tar
+
+# load into k8s nodes
+docker load -i connector-1.0.tar
 ```
 
 ## register Source Type and Create source
@@ -104,7 +114,7 @@ Then we can just deploy the connector by:
 kubectl -n vantiq_ns apply connector-deployment.yaml
 ```
 
-You can check the logs to see its runnin gstatus:
+You can check the logs to see its running status:
 ```
 kubectl -n vantiq_ns logs iot-connector-xxxxx
 ```
